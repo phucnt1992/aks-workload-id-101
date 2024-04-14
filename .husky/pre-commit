@@ -1,0 +1,4 @@
+# ignore if there is not md or cs files
+if ! git diff --cached --name-only --diff-filter=ACM | grep -qE '(\.md$)'; then
+  exit 0
+fi
