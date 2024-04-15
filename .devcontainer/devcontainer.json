@@ -1,0 +1,65 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+{
+	"name": "AKS Workload ID 101",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	"features": {
+		"ghcr.io/audacioustux/devcontainers/k9s": {},
+		"ghcr.io/azure/azure-dev/azd": {},
+		"ghcr.io/devcontainers/features/azure-cli": {
+			"installBicep": true
+		},
+		"ghcr.io/devcontainers/features/docker-outside-of-docker": {
+			"installDockerBuildx": true,
+			"moby": true
+		},
+		"ghcr.io/devcontainers/features/git": {
+			"ppa": true
+		},
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube": {
+			"minikube": "none"
+		},
+		"ghcr.io/jsburckhardt/devcontainer-features/gitleaks": {},
+		"ghcr.io/rio/features/kustomize": {},
+		"ghcr.io/audacioustux/devcontainers/taskfile": {},
+		"ghcr.io/devcontainers/features/java": {
+			"jdkDistro": "ms"
+		},
+		"ghcr.io/devcontainers/features/node": {
+			"nodeGypDependencies": true,
+			"version": "lts"
+		}
+	},
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [
+		"c4model:8080"
+	],
+	"portsAttributes": {
+		"8080": {
+			"label": "Structurizr",
+			"protocol": "http"
+		}
+	},
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "bash .devcontainer/scripts/post-create.sh",
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-azuretools.azure-dev",
+				"ms-azuretools.vscode-bicep",
+				"ms-azuretools.vscode-docker",
+				"ms-kubernetes-tools.vscode-aks-tools",
+				"ms-kubernetes-tools.vscode-kubernetes-tools",
+				"redhat.vscode-yaml",
+				"SonarSource.sonarlint-vscode"
+			]
+		}
+	}
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}

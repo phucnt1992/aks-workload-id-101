@@ -1,0 +1,27 @@
+version: "3.8"
+
+volumes:
+  vscode-extensions-data:
+
+networks:
+  workspace-network:
+
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/base:jammy
+    volumes:
+      - ..:/workspace:cached
+      - vscode-extensions-data:/vscode/vscode-server/extensionsCache
+    networks:
+      - workspace-network
+    command: sleep infinity
+
+  c4model:
+    image: structurizr/lite
+    ports:
+      - "8080:8080"
+    networks:
+      - workspace-network
+    volumes:
+      - ../workspace.dsl:/usr/local/structurizr/workspace.dsl:ro
+
