@@ -2,11 +2,15 @@
 param name string
 
 @description('The location will be deployed.')
-param location string
+param location string = resourceGroup().location
 
-resource secretMgnt 'Microsoft.KeyVault/vaults@2023-07-01' = {
+@description('The tag to.')
+param tags object
+
+resource launchpad 'Microsoft.KeyVault/vaults@2023-07-01' = {
   location: location
   name: name
+  tags: tags
 
   properties: {
     sku: {
@@ -14,5 +18,8 @@ resource secretMgnt 'Microsoft.KeyVault/vaults@2023-07-01' = {
       family: 'A'
     }
     tenantId: subscription().tenantId
+    enableSoftDelete: true
+    enableRbacAuthorization: true
   }
 }
+output launchpad string = launchpad.id
