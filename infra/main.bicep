@@ -1,6 +1,7 @@
 targetScope = 'subscription'
 
 param location string = 'southeastasia'
+param keyVaultName string = 'kv-launchpad-dev-sea-${uniqueString(utcNow())}'
 
 param tags object = {
   environment: 'dev'
@@ -20,17 +21,7 @@ resource aksRg 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   tags: tags
 }
 
-module secretModule 'stacks/secret.bicep' = {
-  name: 'secretModule'
-  scope: secretRg
-  params: {
-    name: 'kv-launchpad-dev-sea-01'
-    location: location
-    tags: tags
-  }
-}
-
-module aksModule 'stacks/aks.bicep' = {
+module aksModule 'modules/aks.bicep' = {
   name: 'aksModule'
   scope: aksRg
   params: {
@@ -39,5 +30,16 @@ module aksModule 'stacks/aks.bicep' = {
     location: location
     tags: tags
     nodeRg: 'rg-aksnodes-dev-sea-01'
+  }
+}
+
+module secretModule 'modules/secret.bicep' = {
+  name: 'secretModule'
+  scope: secretRg
+  params: {
+    name: keyVaultName
+    location: location
+    workloadId: aksModule.outputs.workloadId
+    tags: tags
   }
 }

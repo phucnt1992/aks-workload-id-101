@@ -1,5 +1,5 @@
 @description('The location to deploy the resources')
-param location string = resourceGroup().location
+param location string
 
 @description('The name of the Workload Identity to create')
 param workloadName string
