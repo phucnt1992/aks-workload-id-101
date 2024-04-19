@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: saleor-storefront-virtualservice
+spec:
+  hosts:
+    - www.presona.store
+  gateways:
+    - network-istio/default-gateway
+  http:
+    - name: saleor-storefront-v1-routes
+      match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: saleor-storefront.app-saleor.svc.cluster.local
+            port:
+              number: 80

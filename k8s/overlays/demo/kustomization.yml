@@ -1,0 +1,4 @@
+resources:
+  - "namespace.yml"
+  - "serviceaccount.yml"
+  - "pod.yml"

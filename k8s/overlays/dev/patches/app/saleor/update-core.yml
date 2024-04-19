@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://json.schemastore.org/yamllint.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saleor-core
+  namespace: app-saleor
+spec:
+  template:
+    spec:
+      containers:
+        - name: saleor
+          image: ghcr.io/saleor/saleor:latest
+          env:
+            - name: PUBLIC_URL
+              value: https://api.presona.store/

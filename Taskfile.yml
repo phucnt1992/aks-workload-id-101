@@ -155,15 +155,22 @@ tasks:
         --issuer "$AKS_OIDC_ISSUER" \
         --name fed-network-cert-manager-cert-manager \
         --subject system:serviceaccount:network-cert-manager:cert-manager
+      - |
+        az identity federated-credential create \
+        --identity-name "$AKS_WORKLOAD_NAME" \
+        --resource-group "$AKS_RG" \
+        --issuer "$AKS_OIDC_ISSUER" \
+        --name fed-demo-cert-manager \
+        --subject system:serviceaccount:demo:workload-identity-sa
 
   az-forward:
     deps: [aks-connect]
-    desc: "Forward ports from AKS to local"
+    desc: "Forward ports from K8s to local"
     cmds:
-      - kubectl port-forward services/redis-master 6379:6379
       - kubectl port-forward services/mailpit-ui 8025:8025
       - kubectl port-forward services/saleor-core 8000:8000
       - kubectl port-forward services/saleor-dashboard 9000:80
+      - kubectl port-forward services/jaeger-query 16686:16686
 
   minikube:
     deps: [_verify-kubetools]

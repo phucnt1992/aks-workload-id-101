@@ -11,6 +11,7 @@ resources:
   # Application
   - "../../base/app/mailpit"
   - "../../base/app/saleor"
+  - "./app/saleor"
 
 patches:
   - path: ./patches/update-spc.yml
@@ -19,7 +20,9 @@ patches:
   # Mailpit
   - path: ./patches/app/mailpit/add-csi.yml
   # Saleor
-  - path: ./patches/app/saleor/update-deployment.yml
+  - path: ./patches/app/saleor/update-dashboard.yml
+  - path: ./patches/app/saleor/update-core.yml
+  - path: ./patches/app/saleor/update-job.yml
 
 configMapGenerator:
   - name: common-configmap

@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: saleor-populatedb-job
+  namespace: app-saleor
+spec:
+  template:
+    spec:
+      containers:
+        - name: saleor-populatedb-job
+          image: ghcr.io/saleor/saleor:latest
+          env:
+            - name: PUBLIC_URL
+              value: https://api.presona.store/

@@ -104,22 +104,6 @@ spec:
             - name: saleor-secrets-store-inline
               mountPath: /mnt/secrets
               readOnly: true
-      initContainers:
-        - name: saleor-migratedb
-          image: ghcr.io/saleor/saleor:latest
-          command: ["python3", "manage.py", "migrate", "--noinput"]
-          env:
-            - name: DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: postgresql-password
-                  name: saleor-secrets
-            - name: DATABASE_URL
-              value: postgres://saleor:$(DATABASE_PASSWORD)@postgresql-hl.data-postgresql.svc.cluster.local:5432/saleor
-          volumeMounts:
-            - name: saleor-secrets-store-inline
-              mountPath: /mnt/secrets
-              readOnly: true
       restartPolicy: Always
       volumes:
         - name: saleor-media
@@ -272,6 +256,7 @@ spec:
       serviceAccountName: saleor
       containers:
         - image: ghcr.io/saleor/saleor-dashboard:latest
+          imagePullPolicy: Always
           name: dashboard
           ports:
             - containerPort: 80

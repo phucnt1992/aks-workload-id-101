@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: saleor-storefront
+    app.kubernetes.io/component: storefront
+    app.kubernetes.io/instance: saleor-storefront
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: saleor
+  name: saleor-storefront
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: storefront
+      app.kubernetes.io/instance: saleor-storefront
+      app.kubernetes.io/name: saleor
+  template:
+    metadata:
+      labels:
+        app: saleor-storefront
+        app.kubernetes.io/component: storefront
+        app.kubernetes.io/instance: saleor-storefront
+        app.kubernetes.io/managed-by: Kustomize
+        app.kubernetes.io/name: saleor
+    spec:
+      automountServiceAccountToken: false
+      serviceAccountName: saleor
+      containers:
+        - image: docker.io/phucnguyen/saleor-storefront:latest
+          imagePullPolicy: Always
+          name: storefront
+          ports:
+            - containerPort: 3000
+              name: http
+          resources:
+            limits:
+              cpu: 500m
+              ephemeral-storage: 1024Mi
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              ephemeral-storage: 50Mi
+              memory: 256Mi
+      restartPolicy: Always
