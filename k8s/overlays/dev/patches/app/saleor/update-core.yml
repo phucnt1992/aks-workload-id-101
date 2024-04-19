@@ -13,3 +13,5 @@ spec:
           env:
             - name: PUBLIC_URL
               value: https://api.presona.store/
+            - name: ALLOWED_CLIENT_HOSTS
+              value: localhost,dashboard.presona.store,www.presona.store,api.presona.store

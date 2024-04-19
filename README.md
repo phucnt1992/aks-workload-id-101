@@ -69,4 +69,5 @@ Or follow this [guideline](https://github.com/saleor/saleor/discussions/11117#di
 
 1. [Workload Identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview)
 2. [Deploy and configure cluster](https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster)
+3. [Workload Identity Federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation)
 3. [Saleor Architecture](https://docs.saleor.io/docs/3.x/overview/architecture)
