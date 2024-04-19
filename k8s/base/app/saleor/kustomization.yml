@@ -2,7 +2,6 @@ resources:
   - "namespace.yml"
   - "service.yml"
   - "serviceaccount.yml"
-  - "networkpolicy.yml"
   - "pvc.yml"
   - "spc.yml"
   - "deployment.yml"
