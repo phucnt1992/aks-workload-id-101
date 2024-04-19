@@ -1,0 +1,9 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: not-important
+spec:
+  parameters:
+    keyvaultName: kv-launchpad-dev-sea-01
+    clientID: 9d70c222-8191-48db-8427-9876811ae584
+    tenantID: c1051e47-671a-4893-811c-4f38be73c146

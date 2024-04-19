@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://json.schemastore.org/yamllint.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailpit
+  namespace: app-mailpit
+spec:
+  template:
+    spec:
+      containers:
+        - name: mailpit
+          volumeMounts:
+            - name: mailpit-secrets-store-inline
+              mountPath: /mnt/secrets
+              readOnly: true
+      volumes:
+        - name: mailpit-secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: mailpit-spc

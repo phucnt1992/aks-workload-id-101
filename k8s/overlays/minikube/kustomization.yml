@@ -15,9 +15,19 @@ patches:
     target:
       kind: SecretProviderClass
   # Redis
-  - path: ./patches/data/redis/remove-sci.yml
+  - path: ./patches/data/redis/remove-csi.yml
   # PostgreSQL
-  - path: ./patches/data/postgresql/remove-sci.yml
+  - path: ./patches/data/postgresql/remove-csi.yml
+  # Saleor
+  - path: ./patches/app/saleor/remove-csi.yml
+
+configMapGenerator:
+  - name: common-config
+    literals:
+      - DEFAULT_CHANNEL_SLUG=default-channel
+      - HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS=True
+      - HTTP_IP_FILTER_ENABLED=True
+      - DEFAULT_FROM_EMAIL=noreply@example.com
 
 secretGenerator:
   - name: redis-secrets

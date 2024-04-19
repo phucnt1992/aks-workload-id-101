@@ -1,5 +1,26 @@
 resources:
+  # Data
   - "../../base/data/redis"
+  - "../../base/data/postgresql"
+  # Networking
+  - "../../base/network/cert-manager"
+  # Observibility
+  - "../../base/observibility/jaeger"
+  # Application
+  - "../../base/app/mailpit"
+  - "../../base/app/saleor"
 
 patches:
-  - path: spc-patch.yml
+  - path: ./patches/update-spc.yml
+    target:
+      kind: SecretProviderClass
+  # Mailpit
+  - path: ./patches/app/mailpit/add-csi.yml
+
+configMapGenerator:
+  - name: common-config
+    literals:
+      - DEFAULT_CHANNEL_SLUG=default-channel
+      - HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS=True
+      - HTTP_IP_FILTER_ENABLED=True
+      - DEFAULT_FROM_EMAIL=noreply@example.com

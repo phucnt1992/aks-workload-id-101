@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://json.schemastore.org/yamllint.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saleor-core
+  namespace: app-saleor
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: saleor-migratedb
+          volumeMounts:
+            - mountPath: /mnt/secrets
+              $patch: delete
+      containers:
+        - name: saleor
+          volumeMounts:
+            - mountPath: /mnt/secrets
+              $patch: delete
+      volumes:
+        - name: saleor-secrets-store-inline
+          $patch: delete

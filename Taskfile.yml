@@ -88,8 +88,64 @@ tasks:
     desc: "Deploy Azure infrastructure"
     prompt: "Deploy bicep infra to Azure?"
     cmd: az deployment sub create --location southeastasia -f ./infra/main.bicep --parameters publicDnsZoneName=$PUBLIC_DOMAIN
+
   az-destroy:
     deps: [az-setsub]
     desc: "Destroy Azure infrastructure"
     prompt: "Destroy bicep infra on Azure?"
     cmd: az deployment group create --location southeastasia -f ./infra/main.bicep --mode Complete
+
+  az-aksconnect:
+    deps: [az-setsub]
+    desc: "Connect to AKS cluster"
+    cmd: az aks get-credentials -g $AKS_RG --name $AKS_NAME
+
+  az-minikube:
+    deps: [_verify-kubetools]
+    desc: "Set minikube as the k8s context"
+    cmds:
+      - minikube start --driver=docker
+      - kubectl config use-context minikube
+
+  az-populatesecrets:
+    deps: [az-setsub]
+    desc: "Populate secrets in Azure Key Vault"
+    prompt: "Populate Secrets to KeyVault?"
+    cmds:
+      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "REDIS_PASSWORD" --value $REDIS_PASSWORD
+      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "POSTGRESQL_USER_PASSWORD" --value $POSTGRESQL_USER_PASSWORD
+      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "POSTGRESQL_PASSWORD" --value $POSTGRESQL_PASSWORD
+      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "MAILPIT_UI_PASSWORD" --value $MAILPIT_UI_PASSWORD
+      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "SALEOR_SECRET_KEY" --value $SALEOR_SECRET_KEY
+
+  az-showoidc:
+    deps: [az-setsub]
+    desc: "Show OIDC issuer URL"
+    cmd: az aks show -n $AKS_NAME -g $AKS_RG --query "oidcIssuerProfile.issuerUrl" -otsv
+
+  az-createfed:
+    deps: [az-setsub]
+    desc: "Create file share in Azure"
+    vars:
+      NAMESPACE: ""
+      NAME: ""
+    requires:
+      vars:
+        - NAMESPACE
+        - NAME
+    cmd: |
+      az identity federated-credential create \
+        --name fed-{{.NAMESPACE}}-{{.NAME}} \
+        --identity-name "$AKS_WORKLOAD_NAME" \
+        --resource-group "$AKS_RG" \
+        --issuer "$AKS_OIDC_ISSUER" \
+        --subject system:serviceaccount:"${NAMESPACE}":"${NAME}"
+
+  az-forward:
+    deps: [aks-connect]
+    desc: "Forward ports from AKS to local"
+    cmds:
+      - kubectl port-forward services/redis-master 6379:6379
+      - kubectl port-forward services/mailpit-ui 8025:8025
+      - kubectl port-forward services/saleor-storefront 8001:8001
+      - kubectl port-forward services/saleor-dashboard 9000:80

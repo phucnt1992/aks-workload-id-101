@@ -7,6 +7,9 @@ param workloadName string
 @description('The name of the AKS cluster to create')
 param aksName string
 
+@description('The version of the AKS cluster to create')
+param aksVersion string
+
 @description('The name of the resource group to create the AKS Node VMs in')
 param nodeRg string
 
@@ -20,6 +23,7 @@ resource workloadId 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31
   tags: tags
 }
 output workloadId string = workloadId.id
+output workloadPrincipalId string = workloadId.properties.principalId
 
 resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
   location: location
@@ -34,6 +38,7 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
   }
   properties: {
     nodeResourceGroup: nodeRg
+    kubernetesVersion: aksVersion
 
     // Enable OIDC Issuer
     oidcIssuerProfile: {
@@ -50,29 +55,15 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
       {
         name: toLower('systempool')
         enableAutoScaling: true
-        orchestratorVersion: '1.29.2'
-        vmSize: 'Standard_DS4_v2'
+        orchestratorVersion: aksVersion
+        vmSize: 'Standard_DS2_v2'
         osType: 'Linux'
         workloadRuntime: 'OCIContainer'
         osSKU: 'AzureLinux'
         mode: 'System'
         count: 1
         minCount: 1
-        maxCount: 2
-        tags: tags
-      }
-      {
-        name: toLower('apppool')
-        enableAutoScaling: true
-        orchestratorVersion: '1.29.2'
-        vmSize: 'Standard_B2s_v2'
-        osType: 'Linux'
-        workloadRuntime: 'OCIContainer'
-        osSKU: 'AzureLinux'
-        mode: 'User'
-        count: 1
-        minCount: 1
-        maxCount: 2
+        maxCount: 1
         tags: tags
       }
     ]
@@ -93,7 +84,7 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
           ]
         }
         revisions: [
-          'string'
+          'asm-1-20'
         ]
       }
     }
@@ -109,3 +100,21 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
   }
 }
 output aksId string = aks.id
+
+resource appPool 'Microsoft.ContainerService/managedClusters/agentPools@2024-01-02-preview' = {
+  name: toLower('apppool')
+  parent: aks
+  properties: {
+    enableAutoScaling: true
+    orchestratorVersion: aksVersion
+    vmSize: 'Standard_B2s_v2'
+    osType: 'Linux'
+    workloadRuntime: 'OCIContainer'
+    osSKU: 'AzureLinux'
+    mode: 'User'
+    count: 1
+    minCount: 1
+    maxCount: 1
+    tags: tags
+  }
+}

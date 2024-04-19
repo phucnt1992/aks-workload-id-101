@@ -34,7 +34,8 @@
 		"ghcr.io/devcontainers/features/node": {
 			"nodeGypDependencies": true,
 			"version": "lts"
-		}
+		},
+		"ghcr.io/stuartleeks/dev-container-features/azure-cli-persistence": {},
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [
@@ -59,7 +60,8 @@
 				"ms-kubernetes-tools.vscode-kubernetes-tools",
 				"redhat.vscode-yaml",
 				"SonarSource.sonarlint-vscode",
-				"task.vscode-task"
+				"task.vscode-task",
+				"dotenv.dotenv-vscode"
 			],
 			"settings": {
 				"vs-kubernetes": {

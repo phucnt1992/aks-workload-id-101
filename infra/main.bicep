@@ -33,9 +33,10 @@ module aksModule 'modules/aks.bicep' = {
   params: {
     aksName: 'aks-app-dev-sea-01'
     workloadName: 'id-aks-dev-sea-01'
+    nodeRg: 'rg-aksnodes-dev-sea-01'
+    aksVersion: '1.29.2'
     location: location
     tags: tags
-    nodeRg: 'rg-aksnodes-dev-sea-01'
   }
 }
 
@@ -45,7 +46,7 @@ module secretModule 'modules/secret.bicep' = {
   params: {
     name: 'kv-launchpad-dev-sea-01'
     location: location
-    workloadId: aksModule.outputs.workloadId
+    workloadId: aksModule.outputs.workloadPrincipalId
     tags: tags
   }
 }

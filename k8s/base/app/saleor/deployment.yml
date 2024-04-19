@@ -93,7 +93,7 @@ spec:
               value: smtp://mailpit-smtp.app-mailpit.svc.cluster.local:25
           resources:
             limits:
-              cpu: 1
+              cpu: "1"
               ephemeral-storage: 1024Mi
               memory: 1Gi
             requests:
@@ -103,8 +103,11 @@ spec:
           volumeMounts:
             - mountPath: /app/media
               name: saleor-media
+            - name: saleor-secrets-store-inline
+              mountPath: /mnt/secrets
+              readOnly: true
       initContainers:
-        - name: migratedb
+        - name: saleor-migratedb
           image: ghcr.io/saleor/saleor:latest
           command: ["python3", "manage.py", "migrate", "--noinput"]
           env:
@@ -115,11 +118,21 @@ spec:
                   name: saleor-secrets
             - name: DATABASE_URL
               value: postgres://saleor:$(DATABASE_PASSWORD)@postgresql-hl.data-postgresql.svc.cluster.local:5432/saleor
+          volumeMounts:
+            - name: saleor-secrets-store-inline
+              mountPath: /mnt/secrets
+              readOnly: true
       restartPolicy: Always
       volumes:
         - name: saleor-media
           persistentVolumeClaim:
             claimName: saleor-media
+        - name: saleor-secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: saleor-spc
 ---
 # Worker
 apiVersion: apps/v1
@@ -214,7 +227,7 @@ spec:
               value: smtp://mailpit-smtp.app-mailpit.svc.cluster.local:25
           resources:
             limits:
-              cpu: 1
+              cpu: "1"
               ephemeral-storage: 1024Mi
               memory: 1Gi
             requests:
