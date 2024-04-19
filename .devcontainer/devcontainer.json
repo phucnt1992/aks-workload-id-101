@@ -13,15 +13,17 @@
 		"ghcr.io/devcontainers/features/azure-cli": {
 			"installBicep": true
 		},
-		"ghcr.io/devcontainers/features/docker-outside-of-docker": {
-			"installDockerBuildx": true,
-			"moby": true
+		"ghcr.io/devcontainers/features/docker-in-docker": {
+			"dockerDashComposeVersion": "latest",
+			"installDockerBuildx": true
 		},
 		"ghcr.io/devcontainers/features/git": {
 			"ppa": true
 		},
 		"ghcr.io/devcontainers/features/kubectl-helm-minikube": {
-			"minikube": "none"
+			"minikube": "latest",
+			"helm": "latest",
+			"version": "latest"
 		},
 		"ghcr.io/jsburckhardt/devcontainer-features/gitleaks": {},
 		"ghcr.io/rio/features/kustomize": {},
@@ -56,8 +58,14 @@
 				"ms-kubernetes-tools.vscode-aks-tools",
 				"ms-kubernetes-tools.vscode-kubernetes-tools",
 				"redhat.vscode-yaml",
-				"SonarSource.sonarlint-vscode"
-			]
+				"SonarSource.sonarlint-vscode",
+				"task.vscode-task"
+			],
+			"settings": {
+				"vs-kubernetes": {
+					"vs-kubernetes.kubeconfig": "/home/vscode/.kube/config"
+				}
+			}
 		}
 	}
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.

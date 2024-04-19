@@ -396,3 +396,15 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Kustomization output
+.out/
+
+# Helm dependency directory
+charts/
+
+# pnpm store
+.pnpm-store/
+
+# dotenv
+.env

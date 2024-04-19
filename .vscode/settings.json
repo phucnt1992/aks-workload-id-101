@@ -6,6 +6,10 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        "**/node_modules": true
+        "**/node_modules": true,
+        "**/.pnpm-store": true
+    },
+    "vs-kubernetes": {
+        "vs-kubernetes.kubeconfig": "/home/vscode/.kube/config"
     }
 }
