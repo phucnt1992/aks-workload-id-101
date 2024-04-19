@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  DEFAULT_CHANNEL_SLUG: default-channel
+  HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS: "True"
+  HTTP_IP_FILTER_ENABLED: "True"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: api-common-env
+  name: common-env

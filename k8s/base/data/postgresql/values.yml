@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bitnami/charts/main/bitnami/postgresql/values.schema.json
+auth:
+  existingSecret: postgresql-secrets
+  username: saleor
+  replicationUsername: saleor_read_only
+  database: saleor
+primary:
+  # Mount the secrets store volume
+  extraVolumes:
+    - name: postgresql-secrets-store-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: postgresql-spc
+  extraVolumeMounts:
+    - name: postgresql-secrets-store-inline
+      mountPath: /mnt/secrets
+      readOnly: true

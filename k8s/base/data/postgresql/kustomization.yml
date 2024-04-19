@@ -1,0 +1,13 @@
+resources:
+  - "namespace.yml"
+  - "spc.yml"
+
+namespace: data-postgresql
+
+helmCharts:
+  - name: postgresql
+    releaseName: postgresql
+    repo: https://charts.bitnami.com/bitnami
+    namespace: data-postgresql
+    version: 15.*
+    valuesFile: values.yml

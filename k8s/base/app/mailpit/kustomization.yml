@@ -1,0 +1,13 @@
+resources:
+  - "namespace.yml"
+  - "spc.yml"
+
+namespace: app-mailpit
+
+helmCharts:
+  - name: mailpit
+    releaseName: mailpit
+    repo: https://jouve.github.io/charts/
+    namespace: app-mailpit
+    version: 0.*
+    valuesFile: values.yml

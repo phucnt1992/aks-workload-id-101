@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app.kubernetes.io/component: media
+    app.kubernetes.io/instance: saleor-media
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: saleor
+  name: saleor-media
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: {}

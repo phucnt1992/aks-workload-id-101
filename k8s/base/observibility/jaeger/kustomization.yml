@@ -1,0 +1,13 @@
+resources:
+  - namespace.yml
+  - jaeger.yml
+
+namespace: observibility-jaeger
+
+helmCharts:
+  - name: jaeger
+    releaseName: jaeger
+    repo: https://jaegertracing.github.io/helm-charts
+    namespace: observibility-jaeger
+    version: 3.*
+    valuesFile: values.yml

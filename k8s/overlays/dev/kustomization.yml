@@ -1,0 +1,5 @@
+resources:
+  - "../../base/data/redis"
+
+patches:
+  - path: spc-patch.yml

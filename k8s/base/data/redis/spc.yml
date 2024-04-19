@@ -1,0 +1,22 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: redis-spc
+spec:
+  provider: azure
+  parameters:
+    keyvaultName:
+    clientID:
+    tenantID:
+    objects: |
+      array:
+        - |
+          objectName: redis-password
+          objectType: secret
+          objectAlias: REDIS_PASSWORD
+    secretObjects:
+      - secretName: redis-secrets
+        type: Opaque
+        data:
+          - key: redis-password
+            objectName: REDIS_PASSWORD

@@ -1,0 +1,34 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: saleor-spc
+spec:
+  provider: azure
+  parameters:
+    keyvaultName:
+    clientID:
+    tenantID:
+    objects: |
+      array:
+        - |
+          objectName: Postgresql-Password
+          objectType: secret
+          objectAlias: POSTGRESQL_USER_PASSWORD
+        - |
+          objectName: Redis-Password
+          objectType: secret
+          objectAlias: REDIS_PASSWORD
+        - |
+          objectName: Saleor-Secret-Key
+          objectType: secret
+          objectAlias: SALEOR_SECRET_KEY
+    secretObjects:
+      - secretName: saleor-secrets
+        type: Opaque
+        data:
+          - key: postgresql-password
+            objectName: POSTGRESQL_PASSWORD
+          - key: redis-password
+            objectName: REDIS_PASSWORD
+          - key: secret-key
+            objectName: SALEOR_SECRET_KEY

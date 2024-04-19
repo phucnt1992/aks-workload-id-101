@@ -1,0 +1,11 @@
+resources:
+  - "namespace.yml"
+
+helmCharts:
+  - name: cert-manager
+    releaseName: cert-manager
+    namespace: network-cert-manager
+    repo: https://charts.jetstack.io
+    version: 1.*
+    valuesFile: values.yml
+    includeCRDs: true

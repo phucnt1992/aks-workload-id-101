@@ -1,0 +1,41 @@
+resources:
+  # Data
+  - "../../base/data/redis"
+  - "../../base/data/postgresql"
+  # Networking
+  - "../../base/network/cert-manager"
+  # Observibility
+  - "../../base/observibility/jaeger"
+  # Application
+  - "../../base/app/mailpit"
+  - "../../base/app/saleor"
+
+patches:
+  - path: ./patches/delete-spc.yml
+    target:
+      kind: SecretProviderClass
+  # Redis
+  - path: ./patches/data/redis/remove-sci.yml
+  # PostgreSQL
+  - path: ./patches/data/postgresql/remove-sci.yml
+
+secretGenerator:
+  - name: redis-secrets
+    namespace: data-redis
+    literals:
+      - redis-password=changeit
+  - name: postgresql-secrets
+    namespace: data-postgresql
+    literals:
+      - postgres-password=changeit
+      - password=changeit
+  - name: mailpit-secrets
+    namespace: app-mailpit
+    literals:
+      - ui.htpasswd=saleor:changeit
+  - name: saleor-secrets
+    namespace: app-saleor
+    literals:
+      - secret-key=changeit
+      - redis-password=changeit
+      - postgresql-password=changeit

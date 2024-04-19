@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jouve/charts/main/charts/mailpit/values.schema.json
+mailpit:
+  ui:
+    authFile:
+      enabled: true
+      existingSecret:
+        name: mailpit-secrets
+        key: mailpit-ui-password

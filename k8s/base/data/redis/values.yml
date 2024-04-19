@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bitnami/charts/main/bitnami/redis/values.schema.json
+architecture: standalone
+auth:
+  enabled: true
+  existingSecret: redis-secrets
+  existingSecretPasswordKey: redis-password
+master:
+  # Mount the secrets store volume
+  extraVolumes:
+    - name: redis-secrets-store-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: redis-spc
+  extraVolumeMounts:
+    - name: redis-secrets-store-inline
+      mountPath: /mnt/secrets
+      readOnly: true

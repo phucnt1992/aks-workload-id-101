@@ -1,0 +1,3 @@
+[submodule "storefront"]
+	path = storefront
+	url = https://github.com/saleor/storefront.git

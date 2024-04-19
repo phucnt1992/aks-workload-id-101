@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: saleor-core
+    app.kubernetes.io/component: core
+    app.kubernetes.io/instance: saleor-core
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: saleor
+  name: saleor-core
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/component: core
+    app.kubernetes.io/instance: saleor-core
+    app.kubernetes.io/name: saleor
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: saleor-dashboard
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/instance: saleor-dashboard
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: saleor
+  name: saleor-dashboard
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/instance: saleor-dashboard
+    app.kubernetes.io/name: saleor
+  type: ClusterIP

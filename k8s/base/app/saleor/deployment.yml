@@ -1,0 +1,282 @@
+# Core
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: saleor-core
+    app.kubernetes.io/component: core
+    app.kubernetes.io/instance: saleor-core
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: saleor
+  name: saleor-core
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: core
+      app.kubernetes.io/instance: saleor-core
+      app.kubernetes.io/name: saleor
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: core
+        app.kubernetes.io/instance: saleor-core
+        app.kubernetes.io/managed-by: Kustomize
+        app.kubernetes.io/name: saleor
+        network/saleor-backend-tier: "true"
+      name: salor-core
+    spec:
+      automountServiceAccountToken: false
+      serviceAccountName: saleor
+      containers:
+        - image: ghcr.io/saleor/saleor:latest
+          name: saleor
+          ports:
+            - containerPort: 8000
+              name: http
+          env:
+            # Core
+            - name: ALLOWED_HOSTS
+              value: localhost,saleor-core
+            - name: DASHBOARD_URL
+              value: http://saleor-dashboard.app-saleor.svc.cluster.local/
+            - name: JAEGER_AGENT_HOST
+              value: jaeger-agent.observibility-jaeger.svc.cluster.local
+            # Common
+            - name: DEFAULT_CHANNEL_SLUG
+              valueFrom:
+                configMapKeyRef:
+                  key: DEFAULT_CHANNEL_SLUG
+                  name: common-configmap
+            - name: HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS
+              valueFrom:
+                configMapKeyRef:
+                  key: HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS
+                  name: common-configmap
+            - name: HTTP_IP_FILTER_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  key: HTTP_IP_FILTER_ENABLED
+                  name: common-configmap
+            # Backend
+            - name: DEFAULT_FROM_EMAIL
+              valueFrom:
+                configMapKeyRef:
+                  key: DEFAULT_FROM_EMAIL
+                  name: common-configmap
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: secret-key
+                  name: saleor-secrets
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: redis-password
+                  name: saleor-secrets
+            - name: REDIS_CONSTR
+              value: redis://:$(REDIS_PASSWORD)@redis-headless.data-redis.svc.cluster.local:6379
+            - name: REDIS_URL
+              value: $(REDIS_CONSTR)/0
+            - name: CELERY_BROKER_URL
+              value: $(REDIS_CONSTR)/1
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: postgresql-password
+                  name: saleor-secrets
+            - name: DATABASE_URL
+              value: postgres://saleor:$(DATABASE_PASSWORD)@postgresql-hl.data-postgresql.svc.cluster.local:5432/saleor
+            - name: EMAIL_URL
+              value: smtp://mailpit-smtp.app-mailpit.svc.cluster.local:25
+          resources:
+            limits:
+              cpu: 1
+              ephemeral-storage: 1024Mi
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              ephemeral-storage: 50Mi
+              memory: 256Mi
+          volumeMounts:
+            - mountPath: /app/media
+              name: saleor-media
+      initContainers:
+        - name: migratedb
+          image: ghcr.io/saleor/saleor:latest
+          command: ["python3", "manage.py", "migrate", "--noinput"]
+          env:
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: postgresql-password
+                  name: saleor-secrets
+            - name: DATABASE_URL
+              value: postgres://saleor:$(DATABASE_PASSWORD)@postgresql-hl.data-postgresql.svc.cluster.local:5432/saleor
+      restartPolicy: Always
+      volumes:
+        - name: saleor-media
+          persistentVolumeClaim:
+            claimName: saleor-media
+---
+# Worker
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: saleor-worker
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/instance: saleor-worker
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: saleor
+  name: saleor-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: worker
+      app.kubernetes.io/instance: saleor-worker
+      app.kubernetes.io/name: saleor
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: worker
+        app.kubernetes.io/instance: saleor-worker
+        app.kubernetes.io/managed-by: Kustomize
+        app.kubernetes.io/name: saleor
+        network/saleor-backend-tier: "true"
+      name: saleor-worker
+    spec:
+      automountServiceAccountToken: false
+      serviceAccountName: saleor
+      containers:
+        - image: ghcr.io/saleor/saleor:latest
+          name: saleor-worker
+          args:
+            - celery
+            - -A
+            - saleor
+            - --app=saleor.celeryconf:app
+            - worker
+            - --loglevel=info
+            - -B
+          env:
+            # Common
+            - name: DEFAULT_CHANNEL_SLUG
+              valueFrom:
+                configMapKeyRef:
+                  key: DEFAULT_CHANNEL_SLUG
+                  name: common-configmap
+            - name: HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS
+              valueFrom:
+                configMapKeyRef:
+                  key: HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS
+                  name: common-configmap
+            - name: HTTP_IP_FILTER_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  key: HTTP_IP_FILTER_ENABLED
+                  name: common-configmap
+            # Backend
+            - name: DEFAULT_FROM_EMAIL
+              valueFrom:
+                configMapKeyRef:
+                  key: DEFAULT_FROM_EMAIL
+                  name: common-configmap
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: secret-key
+                  name: saleor-secrets
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: redis-password
+                  name: saleor-secrets
+            - name: REDIS_CONSTR
+              value: redis://:$(REDIS_PASSWORD)@redis-headless.data-redis.svc.cluster.local:6379
+            - name: REDIS_URL
+              value: $(REDIS_CONSTR)/0
+            - name: CELERY_BROKER_URL
+              value: $(REDIS_CONSTR)/1
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: postgresql-password
+                  name: saleor-secrets
+            - name: DATABASE_URL
+              value: postgres://saleor:$(DATABASE_PASSWORD)@postgresql-hl.data-postgresql.svc.cluster.local:5432/saleor
+            - name: EMAIL_URL
+              value: smtp://mailpit-smtp.app-mailpit.svc.cluster.local:25
+          resources:
+            limits:
+              cpu: 1
+              ephemeral-storage: 1024Mi
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              ephemeral-storage: 50Mi
+              memory: 256Mi
+          volumeMounts:
+            - mountPath: /app/media
+              name: saleor-media
+      restartPolicy: Always
+      volumes:
+        - name: saleor-media
+          persistentVolumeClaim:
+            claimName: saleor-media
+---
+# Dashboard
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: saleor-dashboard
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/instance: saleor-dashboard
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: saleor
+  name: saleor-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: dashboard
+      app.kubernetes.io/instance: saleor-dashboard
+      app.kubernetes.io/name: saleor
+  template:
+    metadata:
+      labels:
+        app: saleor-dashboard
+        app.kubernetes.io/component: dashboard
+        app.kubernetes.io/instance: saleor-dashboard
+        app.kubernetes.io/managed-by: Kustomize
+        app.kubernetes.io/name: saleor
+    spec:
+      automountServiceAccountToken: false
+      serviceAccountName: saleor
+      containers:
+        - image: ghcr.io/saleor/saleor-dashboard:latest
+          name: dashboard
+          ports:
+            - containerPort: 80
+              name: http
+          env:
+            - name: API_URI
+              value: http://saleor-core.app-saleor.svc.cluster.local:8000/graphql/
+          resources:
+            limits:
+              cpu: 500m
+              ephemeral-storage: 1024Mi
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              ephemeral-storage: 50Mi
+              memory: 256Mi
+      restartPolicy: Always
+---
+

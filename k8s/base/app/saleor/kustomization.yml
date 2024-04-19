@@ -1,0 +1,18 @@
+resources:
+  - "namespace.yml"
+  - "service.yml"
+  - "serviceaccount.yml"
+  - "networkpolicy.yml"
+  - "pvc.yml"
+  - "deployment.yml"
+  - "job.yml"
+
+namespace: app-saleor
+
+configMapGenerator:
+  - name: common-configmap
+    literals:
+      - DEFAULT_CHANNEL_SLUG=default-channel
+      - HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS=True
+      - HTTP_IP_FILTER_ENABLED=True
+      - DEFAULT_FROM_EMAIL=noreply@example.com

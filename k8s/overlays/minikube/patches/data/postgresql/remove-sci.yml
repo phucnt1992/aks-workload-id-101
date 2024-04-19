@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://json.schemastore.org/yamllint.json
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgresql
+  namespace: data-postgresql
+spec:
+  template:
+    spec:
+      containers:
+        - name: postgresql
+          volumeMounts:
+            - mountPath: /mnt/secrets
+              $patch: delete
+      volumes:
+        - name: postgresql-secrets-store-inline
+          $patch: delete

@@ -1,0 +1,22 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: mailpit-spc
+spec:
+  provider: azure
+  parameters:
+    keyvaultName:
+    clientID:
+    tenantID:
+    objects: |
+      array:
+        - |
+          objectName: mailpit-ui-password
+          objectType: secret
+          objectAlias: MAILPIT_UI_PASSWORD
+    secretObjects:
+      - secretName: mailpit-secrets
+        type: Opaque
+        data:
+          - key: ui.htpasswd
+            objectName: MAILPIT_UI_PASSWORD

@@ -1,0 +1,8 @@
+cert-manager:
+  namespace: network-cert-manager
+podLabels:
+  azure.workload.identity/use: "true"
+serviceAccount:
+  podLabels:
+    azure.workload.identity/use: "true"
+installCRDs: true

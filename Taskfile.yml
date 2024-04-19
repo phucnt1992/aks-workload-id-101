@@ -1,0 +1,95 @@
+version: "3"
+
+silent: true
+
+dotenv:
+  - ".env"
+
+vars:
+  K8S_PATH: "./k8s"
+  OUTPUT_PATH: "./.out"
+
+  # Params
+  TARGET: "minikube"
+
+tasks:
+  _verify-node:
+    internal: true
+    preconditions:
+      - msg: "Node.js is not installed. Please install it from https://nodejs.org/en/download/"
+        sh: "command -v npm"
+  _verify-azcli:
+    internal: true
+    preconditions:
+      - msg: "Azure CLI is not installed. Please install it from https://docs.microsoft.com/en-us/cli/azure/install-azure-cli"
+        sh: "command -v az"
+  _verify-kubetools:
+    internal: true
+    preconditions:
+      - msg: "kubectl is not installed. Please install it from https://kubernetes.io/docs/tasks/tools/install-kubectl/"
+        sh: "command -v kubectl"
+      - msg: "helm is not installed. Please install it from https://helm.sh/docs/intro/install/"
+        sh: "command -v helm"
+      - msg: "kustomize is not installed. Please install it from https://kubectl.docs.kubernetes.io/installation/kustomize/"
+        sh: "command -v kustomize"
+  _verify-target-var:
+    internal: true
+    preconditions:
+      - msg: "TARGET var is required"
+        sh: test "{{.TARGET}}" != ""
+
+  build:
+    desc: "Build the k8s manifests"
+    deps:
+      - _verify-kubetools
+      - _verify-target-var
+    preconditions:
+      - msg: "Target directory '{{.OVERLAY_DIR}}' does not exist"
+        sh: test -d "{{.OVERLAY_DIR}}"
+    vars:
+      DIR_NAME:
+        sh: dirname "{{.TARGET}}"
+      OVERLAY_DIR: "{{.K8S_PATH}}/overlays/{{.TARGET}}"
+    cmds:
+      - mkdir -p "{{.OUTPUT_PATH}}/{{.DIR_NAME}}"
+      - kustomize build --enable-helm --enable-alpha-plugins=true "{{.OVERLAY_DIR}}" > "{{.OUTPUT_PATH}}/{{.TARGET}}".yml
+
+  validate:
+    deps: [build]
+    desc: "Validate the k8s manifests"
+    cmd: kubectl apply --dry-run=client -f "{{.OUTPUT_PATH}}/{{.TARGET}}".yml
+
+  deploy:
+    deps: [build]
+    prompt: "Deploy the k8s manifests to {{.TARGET}}?"
+    desc: "Deploy the k8s manifests"
+    cmd: kubectl apply -f "{{.OUTPUT_PATH}}/{{.TARGET}}".yml
+
+  destroy:
+    deps:
+      - _verify-kubetools
+      - _verify-target-var
+    prompt: "Destroy the k8s manifests in {{.TARGET}}?"
+    desc: "Destroy the k8s manifests"
+    cmd: kubectl delete -f "{{.OUTPUT_PATH}}/{{.TARGET}}".yml
+
+  az-login:
+    deps: [_verify-azcli]
+    desc: "Login to Azure"
+    cmd: az login --use-device-code --tenant $AZURE_TENANT_ID
+
+  az-setsub:
+    deps: [_verify-azcli]
+    desc: "Set the Azure subscription"
+    cmd: az account set --subscription $AZURE_SUBSCRIPTION_ID
+
+  az-deploy:
+    deps: [az-setsub]
+    desc: "Deploy Azure infrastructure"
+    prompt: "Deploy bicep infra to Azure?"
+    cmd: az deployment sub create --location southeastasia -f ./infra/main.bicep --parameters publicDnsZoneName=$PUBLIC_DOMAIN
+  az-destroy:
+    deps: [az-setsub]
+    desc: "Destroy Azure infrastructure"
+    prompt: "Destroy bicep infra on Azure?"
+    cmd: az deployment group create --location southeastasia -f ./infra/main.bicep --mode Complete
