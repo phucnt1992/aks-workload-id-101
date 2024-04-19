@@ -43,5 +43,3 @@ resource keyVaultSecretUserRoleAssignment 'Microsoft.Authorization/roleAssignmen
     principalType: 'ServicePrincipal'
   }
 }
-
-resource mailpitUi

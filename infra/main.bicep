@@ -1,12 +1,12 @@
 targetScope = 'subscription'
 
 param location string = 'southeastasia'
-param keyVaultName string = 'kv-launchpad-dev-sea-${uniqueString(utcNow())}'
+param publicDnsZoneName string
 
 param tags object = {
   environment: 'dev'
   costCenter: 'it'
-  bicep: true
+  bicep: 'true'
 }
 
 resource secretRg 'Microsoft.Resources/resourceGroups@2023-07-01' = {
@@ -21,11 +21,17 @@ resource aksRg 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   tags: tags
 }
 
+resource networkRg 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+  name: 'rg-network-dev-sea-01'
+  location: location
+  tags: tags
+}
+
 module aksModule 'modules/aks.bicep' = {
   name: 'aksModule'
   scope: aksRg
   params: {
-    aksName: 'aks-launchpad-dev-sea-01'
+    aksName: 'aks-app-dev-sea-01'
     workloadName: 'id-aks-dev-sea-01'
     location: location
     tags: tags
@@ -37,9 +43,18 @@ module secretModule 'modules/secret.bicep' = {
   name: 'secretModule'
   scope: secretRg
   params: {
-    name: keyVaultName
+    name: 'kv-launchpad-dev-sea-01'
     location: location
     workloadId: aksModule.outputs.workloadId
+    tags: tags
+  }
+}
+
+module dnsModule 'modules/dns.bicep' = {
+  name: 'dnsModule'
+  scope: networkRg
+  params: {
+    publicDnsZoneName: publicDnsZoneName
     tags: tags
   }
 }

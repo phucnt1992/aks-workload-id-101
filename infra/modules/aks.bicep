@@ -24,31 +24,38 @@ output workloadId string = workloadId.id
 resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
   location: location
   name: aksName
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${workloadId.id}': {}
-    }
-  }
+  tags: tags
   sku: {
     name: 'Base'
     tier: 'Free'
   }
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
+    nodeResourceGroup: nodeRg
+
     // Enable OIDC Issuer
     oidcIssuerProfile: {
       enabled: true
     }
-    nodeResourceGroup: nodeRg
+    // Enable Workload Identity
+    securityProfile: {
+      workloadIdentity: {
+        enabled: true
+      }
+    }
+    dnsPrefix: aksName
     agentPoolProfiles: [
       {
         name: toLower('systempool')
         enableAutoScaling: true
         orchestratorVersion: '1.29.2'
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_DS4_v2'
         osType: 'Linux'
         workloadRuntime: 'OCIContainer'
         osSKU: 'AzureLinux'
+        mode: 'System'
         count: 1
         minCount: 1
         maxCount: 2
@@ -58,15 +65,14 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
         name: toLower('apppool')
         enableAutoScaling: true
         orchestratorVersion: '1.29.2'
-        vmSize: 'Standard_B2ms_v2'
-        spotMaxPrice: -1
-        scaleSetPriority: 'Spot'
+        vmSize: 'Standard_B2s_v2'
         osType: 'Linux'
         workloadRuntime: 'OCIContainer'
         osSKU: 'AzureLinux'
-        count: 0
-        minCount: 0
-        maxCount: 3
+        mode: 'User'
+        count: 1
+        minCount: 1
+        maxCount: 2
         tags: tags
       }
     ]
