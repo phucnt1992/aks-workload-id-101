@@ -1,0 +1,28 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: default-gateway
+  namespace: network-istio
+spec:
+  selector:
+    istio: aks-istio-ingressgateway-external
+  servers:
+    # Redirect HTTP to HTTPS
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*.presona.store"
+      tls:
+        httpsRedirect: true
+    # Serve HTTPS traffice
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - "*.presona.store"
+      tls:
+        mode: SIMPLE
+        credentialName: letsencrypt-tls

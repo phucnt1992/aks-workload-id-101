@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://json.schemastore.org/yamllint.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saleor-dashboard
+  namespace: app-saleor
+spec:
+  template:
+    spec:
+      containers:
+        - name: dashboard
+          image: docker.io/phucnguyen/saleor-dashboard:latest

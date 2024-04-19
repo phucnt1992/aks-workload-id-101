@@ -3,4 +3,6 @@ Seamlessly Integrating Azure Kubernetes Service (AKS) with Azure KeyVault Using 
 
 ## Introduction
 
-## Features
+## References
+
+1. [Workload Identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview)

@@ -1,0 +1,3 @@
+resources:
+  - "gateway.yml"
+  - "namespace.yml"

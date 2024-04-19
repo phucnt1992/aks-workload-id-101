@@ -5,7 +5,7 @@ param name string
 param location string
 
 @description('The workload id to be assigned as KeyVault Secret User role.')
-param workloadId string
+param workloadPrincipleId string
 
 @description('The tag to.')
 param tags object
@@ -36,10 +36,10 @@ resource kvSecretUserRd 'Microsoft.Authorization/roleDefinitions@2018-01-01-prev
 @description('Grant the app service identity with key vault secret user role permissions over the key vault. This allows reading secret contents')
 resource keyVaultSecretUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: secretVault
-  name: guid(resourceGroup().id, workloadId, kvSecretUserRd.id)
+  name: guid(resourceGroup().id, workloadPrincipleId, kvSecretUserRd.id)
   properties: {
     roleDefinitionId: kvSecretUserRd.id
-    principalId: workloadId
+    principalId: workloadPrincipleId
     principalType: 'ServicePrincipal'
   }
 }

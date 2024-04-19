@@ -1,6 +1,5 @@
 resources:
   - namespace.yml
-  - jaeger.yml
 
 namespace: observibility-jaeger
 

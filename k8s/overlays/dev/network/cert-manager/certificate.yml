@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: letsencrypt-tls-certificate
+  namespace: aks-istio-ingress
+spec:
+  secretName: letsencrypt-tls
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  commonName: "*.presona.store"
+  dnsNames:
+    - "*.presona.store"

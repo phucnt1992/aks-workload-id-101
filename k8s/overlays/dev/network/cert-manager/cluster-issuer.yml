@@ -1,0 +1,24 @@
+# Uncomment the `server` field to use the staging environment
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  # name: letsencrypt-staging
+  name: letsencrypt
+  namespace: network-cert-manager
+spec:
+  acme:
+    # server: https://acme-staging-v02.api.letsencrypt.org/directory
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: phucnt1992@outlook.com
+    privateKeySecretRef:
+      # name: letsencrypt-staging
+      name: letsencrypt
+    solvers:
+      - dns01:
+          azureDNS:
+            hostedZoneName: presona.store
+            resourceGroupName: rg-network-dev-sea-01
+            environment: AzurePublicCloud
+            subscriptionID: 515d580d-110a-4fbc-9c39-10b2bfc27e38
+            managedIdentity:
+              clientID: 9d70c222-8191-48db-8427-9876811ae584

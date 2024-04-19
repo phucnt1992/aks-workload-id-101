@@ -46,7 +46,7 @@ module secretModule 'modules/secret.bicep' = {
   params: {
     name: 'kv-launchpad-dev-sea-01'
     location: location
-    workloadId: aksModule.outputs.workloadPrincipalId
+    workloadPrincipleId: aksModule.outputs.workloadPrincipalId
     tags: tags
   }
 }
@@ -56,6 +56,7 @@ module dnsModule 'modules/dns.bicep' = {
   scope: networkRg
   params: {
     publicDnsZoneName: publicDnsZoneName
+    workloadPrincipleId: aksModule.outputs.workloadPrincipalId
     tags: tags
   }
 }

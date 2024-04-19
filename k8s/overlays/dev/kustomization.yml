@@ -4,6 +4,8 @@ resources:
   - "../../base/data/postgresql"
   # Networking
   - "../../base/network/cert-manager"
+  - "./network/cert-manager"
+  - "./network/istio"
   # Observibility
   - "../../base/observibility/jaeger"
   # Application
@@ -16,9 +18,12 @@ patches:
       kind: SecretProviderClass
   # Mailpit
   - path: ./patches/app/mailpit/add-csi.yml
+  # Saleor
+  - path: ./patches/app/saleor/update-deployment.yml
 
 configMapGenerator:
-  - name: common-config
+  - name: common-configmap
+    namespace: app-saleor
     literals:
       - DEFAULT_CHANNEL_SLUG=default-channel
       - HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS=True

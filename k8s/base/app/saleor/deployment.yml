@@ -39,9 +39,7 @@ spec:
           env:
             # Core
             - name: ALLOWED_HOSTS
-              value: localhost,saleor-core
-            - name: DASHBOARD_URL
-              value: http://saleor-dashboard.app-saleor.svc.cluster.local/
+              value: localhost,api.presona.store,dashboard.presona.store,presona.store
             - name: JAEGER_AGENT_HOST
               value: jaeger-agent.observibility-jaeger.svc.cluster.local
             # Common
@@ -278,9 +276,6 @@ spec:
           ports:
             - containerPort: 80
               name: http
-          env:
-            - name: API_URI
-              value: http://saleor-core.app-saleor.svc.cluster.local:8000/graphql/
           resources:
             limits:
               cpu: 500m

@@ -5,9 +5,9 @@ metadata:
 spec:
   provider: azure
   parameters:
-    keyvaultName:
-    clientID:
-    tenantID:
+    keyvaultName: ""
+    clientID: ""
+    tenantID: ""
     objects: |
       array:
         - |
@@ -18,11 +18,11 @@ spec:
           objectName: Postgresql-User-Password
           objectType: secret
           objectAlias: POSTGRESQL_USER_PASSWORD
-    secretObjects:
-      - secretName: postgresql-secrets
-        type: Opaque
-        data:
-          - key: postgresql-password
-            objectName: POSTGRESQL_PASSWORD
-          - key: password
-            objectName: POSTGRESQL_USER_PASSWORD
+  secretObjects:
+    - secretName: postgresql-secrets
+      type: Opaque
+      data:
+        - key: postgres-password
+          objectName: POSTGRESQL_PASSWORD
+        - key: password
+          objectName: POSTGRESQL_USER_PASSWORD

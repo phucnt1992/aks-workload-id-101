@@ -34,8 +34,7 @@
 		"ghcr.io/devcontainers/features/node": {
 			"nodeGypDependencies": true,
 			"version": "lts"
-		},
-		"ghcr.io/stuartleeks/dev-container-features/azure-cli-persistence": {},
+		}
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [

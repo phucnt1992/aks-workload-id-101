@@ -5,13 +5,13 @@ metadata:
 spec:
   provider: azure
   parameters:
-    keyvaultName:
-    clientID:
-    tenantID:
+    keyvaultName: ""
+    clientID: ""
+    tenantID: ""
     objects: |
       array:
         - |
-          objectName: Postgresql-Password
+          objectName: Postgresql-User-Password
           objectType: secret
           objectAlias: POSTGRESQL_USER_PASSWORD
         - |
@@ -22,13 +22,13 @@ spec:
           objectName: Saleor-Secret-Key
           objectType: secret
           objectAlias: SALEOR_SECRET_KEY
-    secretObjects:
-      - secretName: saleor-secrets
-        type: Opaque
-        data:
-          - key: postgresql-password
-            objectName: POSTGRESQL_PASSWORD
-          - key: redis-password
-            objectName: REDIS_PASSWORD
-          - key: secret-key
-            objectName: SALEOR_SECRET_KEY
+  secretObjects:
+    - secretName: saleor-secrets
+      type: Opaque
+      data:
+        - key: postgresql-password
+          objectName: POSTGRESQL_USER_PASSWORD
+        - key: redis-password
+          objectName: REDIS_PASSWORD
+        - key: secret-key
+          objectName: SALEOR_SECRET_KEY

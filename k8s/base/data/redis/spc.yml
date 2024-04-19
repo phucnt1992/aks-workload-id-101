@@ -5,18 +5,18 @@ metadata:
 spec:
   provider: azure
   parameters:
-    keyvaultName:
-    clientID:
-    tenantID:
+    keyvaultName: ""
+    clientID: ""
+    tenantID: ""
     objects: |
       array:
         - |
-          objectName: redis-password
+          objectName: Redis-Password
           objectType: secret
           objectAlias: REDIS_PASSWORD
-    secretObjects:
-      - secretName: redis-secrets
-        type: Opaque
-        data:
-          - key: redis-password
-            objectName: REDIS_PASSWORD
+  secretObjects:
+    - secretName: redis-secrets
+      type: Opaque
+      data:
+        - key: redis-password
+          objectName: REDIS_PASSWORD

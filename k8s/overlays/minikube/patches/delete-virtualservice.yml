@@ -1,0 +1,5 @@
+$patch: delete
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: not-important

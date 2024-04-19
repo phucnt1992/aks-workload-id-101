@@ -54,7 +54,7 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
     agentPoolProfiles: [
       {
         name: toLower('systempool')
-        enableAutoScaling: true
+        enableAutoScaling: false
         orchestratorVersion: aksVersion
         vmSize: 'Standard_DS2_v2'
         osType: 'Linux'
@@ -62,8 +62,6 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
         osSKU: 'AzureLinux'
         mode: 'System'
         count: 1
-        minCount: 1
-        maxCount: 1
         tags: tags
       }
     ]
@@ -105,7 +103,7 @@ resource appPool 'Microsoft.ContainerService/managedClusters/agentPools@2024-01-
   name: toLower('apppool')
   parent: aks
   properties: {
-    enableAutoScaling: true
+    enableAutoScaling: false
     orchestratorVersion: aksVersion
     vmSize: 'Standard_B2s_v2'
     osType: 'Linux'
@@ -113,8 +111,6 @@ resource appPool 'Microsoft.ContainerService/managedClusters/agentPools@2024-01-
     osSKU: 'AzureLinux'
     mode: 'User'
     count: 1
-    minCount: 1
-    maxCount: 1
     tags: tags
   }
 }

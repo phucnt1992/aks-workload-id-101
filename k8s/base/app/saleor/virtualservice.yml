@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: saleor-core-virtualservice
+spec:
+  hosts:
+    - api.presona.store
+  gateways:
+    - network-istio/default-gateway
+  http:
+    - name: saleor-core-v1-routes
+      match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: saleor-core.app-saleor.svc.cluster.local
+            port:
+              number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: saleor-dashboard-virtualservice
+spec:
+  hosts:
+    - dashboard.presona.store
+  gateways:
+    - network-istio/default-gateway
+  http:
+    - name: saleor-dashboard-v1-routes
+      match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: saleor-dashboard.app-saleor.svc.cluster.local
+            port:
+              number: 80

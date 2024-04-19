@@ -4,7 +4,9 @@ resources:
   - "serviceaccount.yml"
   - "networkpolicy.yml"
   - "pvc.yml"
+  - "spc.yml"
   - "deployment.yml"
   - "job.yml"
+  - "virtualservice.yml"
 
 namespace: app-saleor

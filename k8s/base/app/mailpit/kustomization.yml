@@ -1,6 +1,8 @@
 resources:
   - "namespace.yml"
   - "spc.yml"
+  - "serviceaccount.yml"
+  - "virtualservice.yml"
 
 namespace: app-mailpit
 

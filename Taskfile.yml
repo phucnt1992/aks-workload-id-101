@@ -10,7 +10,7 @@ vars:
   OUTPUT_PATH: "./.out"
 
   # Params
-  TARGET: "minikube"
+  TARGET: ""
 
 tasks:
   _verify-node:
@@ -100,23 +100,16 @@ tasks:
     desc: "Connect to AKS cluster"
     cmd: az aks get-credentials -g $AKS_RG --name $AKS_NAME
 
-  az-minikube:
-    deps: [_verify-kubetools]
-    desc: "Set minikube as the k8s context"
-    cmds:
-      - minikube start --driver=docker
-      - kubectl config use-context minikube
-
   az-populatesecrets:
     deps: [az-setsub]
     desc: "Populate secrets in Azure Key Vault"
     prompt: "Populate Secrets to KeyVault?"
     cmds:
-      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "REDIS_PASSWORD" --value $REDIS_PASSWORD
-      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "POSTGRESQL_USER_PASSWORD" --value $POSTGRESQL_USER_PASSWORD
-      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "POSTGRESQL_PASSWORD" --value $POSTGRESQL_PASSWORD
-      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "MAILPIT_UI_PASSWORD" --value $MAILPIT_UI_PASSWORD
-      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "SALEOR_SECRET_KEY" --value $SALEOR_SECRET_KEY
+      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "redis-password" --value "$REDIS_PASSWORD"
+      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "Postgresql-User-Password" --value "$POSTGRESQL_USER_PASSWORD"
+      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "Postgresql-Password" --value "$POSTGRESQL_PASSWORD"
+      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "Mailpit-Ui-Password" --value "$MAILPIT_UI_PASSWORD"
+      - az keyvault secret set --vault-name $KEYVAULT_NAME --name "Saleor-Secret-Key" --value "$SALEOR_SECRET_KEY"
 
   az-showoidc:
     deps: [az-setsub]
@@ -126,20 +119,42 @@ tasks:
   az-createfed:
     deps: [az-setsub]
     desc: "Create file share in Azure"
-    vars:
-      NAMESPACE: ""
-      NAME: ""
-    requires:
-      vars:
-        - NAMESPACE
-        - NAME
-    cmd: |
-      az identity federated-credential create \
-        --name fed-{{.NAMESPACE}}-{{.NAME}} \
+    cmds:
+      - |
+        az identity federated-credential create \
         --identity-name "$AKS_WORKLOAD_NAME" \
         --resource-group "$AKS_RG" \
         --issuer "$AKS_OIDC_ISSUER" \
-        --subject system:serviceaccount:"${NAMESPACE}":"${NAME}"
+        --name fed-app-saleor-saleor \
+        --subject system:serviceaccount:app-saleor:saleor
+      - |
+        az identity federated-credential create \
+        --identity-name "$AKS_WORKLOAD_NAME" \
+        --resource-group "$AKS_RG" \
+        --issuer "$AKS_OIDC_ISSUER" \
+        --name fed-app-mailpit-mailpit \
+        --subject system:serviceaccount:app-mailpit:mailpit
+      - |
+        az identity federated-credential create \
+        --identity-name "$AKS_WORKLOAD_NAME" \
+        --resource-group "$AKS_RG" \
+        --issuer "$AKS_OIDC_ISSUER" \
+        --name fed-data-redis-redis-master \
+        --subject system:serviceaccount:data-redis:redis-master
+      - |
+        az identity federated-credential create \
+        --identity-name "$AKS_WORKLOAD_NAME" \
+        --resource-group "$AKS_RG" \
+        --issuer "$AKS_OIDC_ISSUER" \
+        --name fed-data-postgresql-postgresql \
+        --subject system:serviceaccount:data-postgresql:postgresql
+      - |
+        az identity federated-credential create \
+        --identity-name "$AKS_WORKLOAD_NAME" \
+        --resource-group "$AKS_RG" \
+        --issuer "$AKS_OIDC_ISSUER" \
+        --name fed-network-cert-manager-cert-manager \
+        --subject system:serviceaccount:network-cert-manager:cert-manager
 
   az-forward:
     deps: [aks-connect]
@@ -147,5 +162,12 @@ tasks:
     cmds:
       - kubectl port-forward services/redis-master 6379:6379
       - kubectl port-forward services/mailpit-ui 8025:8025
-      - kubectl port-forward services/saleor-storefront 8001:8001
+      - kubectl port-forward services/saleor-core 8000:8000
       - kubectl port-forward services/saleor-dashboard 9000:80
+
+  minikube:
+    deps: [_verify-kubetools]
+    desc: "Set minikube as the k8s context"
+    cmds:
+      - minikube start --driver=docker
+      - kubectl config use-context minikube

@@ -5,18 +5,18 @@ metadata:
 spec:
   provider: azure
   parameters:
-    keyvaultName:
-    clientID:
-    tenantID:
+    keyvaultName: ""
+    clientID: ""
+    tenantID: ""
     objects: |
       array:
         - |
-          objectName: mailpit-ui-password
+          objectName: Mailpit-Ui-Password
           objectType: secret
           objectAlias: MAILPIT_UI_PASSWORD
-    secretObjects:
-      - secretName: mailpit-secrets
-        type: Opaque
-        data:
-          - key: ui.htpasswd
-            objectName: MAILPIT_UI_PASSWORD
+  secretObjects:
+    - secretName: mailpit-secrets
+      type: Opaque
+      data:
+        - key: ui.htpasswd
+          objectName: MAILPIT_UI_PASSWORD
