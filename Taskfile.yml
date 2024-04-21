@@ -93,7 +93,10 @@ tasks:
     deps: [az-setsub]
     desc: "Destroy Azure infrastructure"
     prompt: "Destroy bicep infra on Azure?"
-    cmd: az deployment group create --location southeastasia -f ./infra/main.bicep --mode Complete
+    cmds:
+      - az deployment group create -g rg-secret-dev-sea-01 -f ./infra/delete.bicep --mode Complete
+      - az deployment group create -g rg-network-dev-sea-01 -f ./infra/delete.bicep --mode Complete
+      - az deployment group create -g rg-aks-dev-sea-01 -f ./infra/delete.bicep --mode Complete
 
   az-aksconnect:
     deps: [az-setsub]
