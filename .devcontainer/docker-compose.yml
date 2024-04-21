@@ -1,8 +1,5 @@
 version: "3.8"
 
-volumes:
-  vscode-extensions-data:
-
 networks:
   workspace-network:
 
@@ -11,7 +8,6 @@ services:
     image: mcr.microsoft.com/devcontainers/base:jammy
     volumes:
       - ..:/workspace:cached
-      - vscode-extensions-data:/vscode/vscode-server/extensionsCache
     networks:
       - workspace-network
     command: sleep infinity
