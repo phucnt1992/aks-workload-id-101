@@ -37,6 +37,11 @@ tasks:
     preconditions:
       - msg: "TARGET var is required"
         sh: test "{{.TARGET}}" != ""
+  _verify-docker:
+    internal: true
+    preconditions:
+      - msg: "Docker is not installed. Please install it from https://docs.docker.com/get-docker/"
+        sh: "command -v docker"
 
   build:
     desc: "Build the k8s manifests"
@@ -174,6 +179,36 @@ tasks:
       - kubectl port-forward services/saleor-core 8000:8000
       - kubectl port-forward services/saleor-dashboard 9000:80
       - kubectl port-forward services/jaeger-query 16686:16686
+
+  az-acrlogin:
+    deps: [az-setsub]
+    desc: "Login to Azure Container Registry"
+    cmd: az acr login -n $ACR_NAME
+
+  docker-build-storefront:
+    desc: "Build the Storefront image"
+    deps: [_verify-docker]
+    env:
+      NEXT_PUBLIC_SALEOR_API_URL: $NEXT_PUBLIC_SALEOR_API_URL
+      NEXT_PUBLIC_STOREFRONT_URL: $NEXT_PUBLIC_STOREFRONT_URL
+    cmd: cd storefront; docker buildx build -t $ACR_NAME.azurecr.io/storefront:latest .
+
+  docker-publish-storefront:
+    desc: "Publish the Storefront image"
+    deps: [docker-build-storefront, az-acrlogin]
+    cmd: docker push $ACR_NAME.azurecr.io/storefront:latest
+
+  docker-build-dashboard:
+    desc: "Build the Dashboard image"
+    deps: [_verify-docker]
+    env:
+      API_URI: $NEXT_PUBLIC_SALEOR_API_URL
+    cmd: cd saleor-dashboard; docker buildx build -t $ACR_NAME.azurecr.io/saleor-dashboard:latest .
+
+  docker-publish-dashboard:
+    desc: "Publish the Dashboard image"
+    deps: [docker-build-dashboard, az-acrlogin]
+    cmd: docker push $ACR_NAME.azurecr.io/saleor-dashboard:latest
 
   minikube:
     deps: [_verify-kubetools]

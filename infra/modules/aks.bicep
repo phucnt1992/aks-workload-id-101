@@ -16,6 +16,9 @@ param nodeRg string
 @description('The tags to apply to the resources')
 param tags object
 
+@description('The name of ACR to create')
+param acrName string
+
 @description('The tags to apply to the resources')
 resource workloadId 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
   location: location
@@ -112,5 +115,34 @@ resource appPool 'Microsoft.ContainerService/managedClusters/agentPools@2024-01-
     mode: 'User'
     count: 1
     tags: tags
+  }
+}
+
+resource acr 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
+  location: location
+  name: acrName
+  tags: tags
+  sku: {
+    name: 'Basic'
+  }
+  properties: {
+    adminUserEnabled: true
+  }
+}
+
+@description('This is the built-in "AcrPull" role. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/containers#acrpull')
+resource arcPullRd 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
+  scope: subscription()
+  name: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+}
+
+@description('Grant AKS the "AcrPull" role on the AcrPull.')
+resource acrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  scope: acr
+  name: guid(resourceGroup().id, aksName, arcPullRd.id)
+  properties: {
+    roleDefinitionId: arcPullRd.id
+    principalId: aks.identity.principalId
+    principalType: 'ServicePrincipal'
   }
 }

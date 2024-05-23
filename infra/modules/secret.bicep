@@ -21,7 +21,7 @@ resource secretVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
       family: 'A'
     }
     tenantId: subscription().tenantId
-    enableSoftDelete: true
+    enableSoftDelete: false
     enableRbacAuthorization: true
   }
 }

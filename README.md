@@ -63,7 +63,7 @@ task deploy TARGET=dev -y
 
 Thumbnail image is not displayed in the product detail page. This is due to the fact that the image is stored in the local file system and the application is not able to access it.
 The solution is to store the image in the cloud storage and update the image URL in the database.
-Or follow this [guideline](https://github.com/saleor/saleor/discussions/11117#discussioncomment-5604251) to manualy update domain
+Or follow this [guideline](https://github.com/saleor/saleor/discussions/11117#discussioncomment-5604251) to manually update domain
 
 ## References
 

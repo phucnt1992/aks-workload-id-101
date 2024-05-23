@@ -32,6 +32,7 @@ module aksModule 'modules/aks.bicep' = {
   scope: aksRg
   params: {
     aksName: 'aks-app-dev-sea-01'
+    acrName: 'acrappdevsea01'
     workloadName: 'id-aks-dev-sea-01'
     nodeRg: 'rg-aksnodes-dev-sea-01'
     aksVersion: '1.29.2'
@@ -44,7 +45,7 @@ module secretModule 'modules/secret.bicep' = {
   name: 'secretModule'
   scope: secretRg
   params: {
-    name: 'kv-launchpad-dev-sea-01'
+    name: 'kv-launchpad-dev-sea-02'
     location: location
     workloadPrincipleId: aksModule.outputs.workloadPrincipalId
     tags: tags

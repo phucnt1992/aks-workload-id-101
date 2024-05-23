@@ -42,6 +42,8 @@ spec:
               value: localhost,api.presona.store,dashboard.presona.store,presona.store
             - name: JAEGER_AGENT_HOST
               value: jaeger-agent.observibility-jaeger.svc.cluster.local
+            - name: JAEGER_LOGGING
+              value: "True"
             # Common
             - name: DEFAULT_CHANNEL_SLUG
               valueFrom:
