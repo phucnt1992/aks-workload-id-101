@@ -20,7 +20,7 @@ param tags object
 param acrName string
 
 @description('The tags to apply to the resources')
-resource workloadId 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
+resource workloadId 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-05-31-preview' = {
   location: location
   name: workloadName
   tags: tags
@@ -28,7 +28,7 @@ resource workloadId 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31
 output workloadId string = workloadId.id
 output workloadPrincipalId string = workloadId.properties.principalId
 
-resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
+resource aks 'Microsoft.ContainerService/managedClusters@2026-06-02-preview' = {
   location: location
   name: aksName
   tags: tags
@@ -85,7 +85,7 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
           ]
         }
         revisions: [
-          'asm-1-20'
+          'asm-1-30'
         ]
       }
     }
@@ -102,13 +102,13 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
 }
 output aksId string = aks.id
 
-resource appPool 'Microsoft.ContainerService/managedClusters/agentPools@2024-01-02-preview' = {
+resource appPool 'Microsoft.ContainerService/managedClusters/agentPools@2026-06-02-preview' = {
   name: toLower('apppool')
   parent: aks
   properties: {
     enableAutoScaling: false
     orchestratorVersion: aksVersion
-    vmSize: 'Standard_B2s_v2'
+    vmSize: 'Standard_DS2_v2'
     osType: 'Linux'
     workloadRuntime: 'OCIContainer'
     osSKU: 'AzureLinux'
@@ -118,7 +118,7 @@ resource appPool 'Microsoft.ContainerService/managedClusters/agentPools@2024-01-
   }
 }
 
-resource acr 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
+resource acr 'Microsoft.ContainerRegistry/registries@2026-09-01-preview' = {
   location: location
   name: acrName
   tags: tags
@@ -131,7 +131,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
 }
 
 @description('This is the built-in "AcrPull" role. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/containers#acrpull')
-resource arcPullRd 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
+resource arcPullRd 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' existing = {
   scope: subscription()
   name: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 }

@@ -35,7 +35,7 @@ module aksModule 'modules/aks.bicep' = {
     acrName: 'acrappdevsea01'
     workloadName: 'id-aks-dev-sea-01'
     nodeRg: 'rg-aksnodes-dev-sea-01'
-    aksVersion: '1.29.2'
+    aksVersion: '1.37'
     location: location
     tags: tags
   }
@@ -52,12 +52,13 @@ module secretModule 'modules/secret.bicep' = {
   }
 }
 
-module dnsModule 'modules/dns.bicep' = {
-  name: 'dnsModule'
-  scope: networkRg
-  params: {
-    publicDnsZoneName: publicDnsZoneName
-    workloadPrincipleId: aksModule.outputs.workloadPrincipalId
-    tags: tags
-  }
-}
+// == Uncomment and configure the DNS module when ready
+// module dnsModule 'modules/dns.bicep' = {
+//   name: 'dnsModule'
+//   scope: networkRg
+//   params: {
+//     publicDnsZoneName: publicDnsZoneName
+//     workloadPrincipleId: aksModule.outputs.workloadPrincipalId
+//     tags: tags
+//   }
+// }

@@ -1,0 +1,59 @@
+{
+  "features": {
+    "ghcr.io/audacioustux/devcontainers/k9s": {
+      "version": "1.0.1",
+      "resolved": "ghcr.io/audacioustux/devcontainers/k9s@sha256:c37d3a6b4bbfa5ee801da37ccbde43ed3b254f014e58f9a7641e5430973ee2dd",
+      "integrity": "sha256:c37d3a6b4bbfa5ee801da37ccbde43ed3b254f014e58f9a7641e5430973ee2dd"
+    },
+    "ghcr.io/audacioustux/devcontainers/taskfile": {
+      "version": "1.0.1",
+      "resolved": "ghcr.io/audacioustux/devcontainers/taskfile@sha256:c7650e10b0a4b97037e3ecdf1d59878f0158cb50957298d5bdde5b61210fb7ba",
+      "integrity": "sha256:c7650e10b0a4b97037e3ecdf1d59878f0158cb50957298d5bdde5b61210fb7ba"
+    },
+    "ghcr.io/azure/azure-dev/azd": {
+      "version": "0.2.0",
+      "resolved": "ghcr.io/azure/azure-dev/azd@sha256:01bbec064fcb34f7c8730b3e3c2cc210699e213419664524982268b2910c4f73",
+      "integrity": "sha256:01bbec064fcb34f7c8730b3e3c2cc210699e213419664524982268b2910c4f73"
+    },
+    "ghcr.io/devcontainers/features/azure-cli": {
+      "version": "1.3.0",
+      "resolved": "ghcr.io/devcontainers/features/azure-cli@sha256:d98f1066c077be0fa9d115b718f458bd803e415181b4a96f82a6f5d9f77241ac",
+      "integrity": "sha256:d98f1066c077be0fa9d115b718f458bd803e415181b4a96f82a6f5d9f77241ac"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker": {
+      "version": "4.1.3",
+      "resolved": "ghcr.io/devcontainers/features/docker-in-docker@sha256:fae40f3c8be5a7c3b0db344c1d30341bc2c91ba38d1d5b14cd2ad72e6d65d084",
+      "integrity": "sha256:fae40f3c8be5a7c3b0db344c1d30341bc2c91ba38d1d5b14cd2ad72e6d65d084"
+    },
+    "ghcr.io/devcontainers/features/git": {
+      "version": "1.3.8",
+      "resolved": "ghcr.io/devcontainers/features/git@sha256:fd75977de13a9979000e0e78baf949adb0ca71d2398995fa22e0a36d7e7e7fe2",
+      "integrity": "sha256:fd75977de13a9979000e0e78baf949adb0ca71d2398995fa22e0a36d7e7e7fe2"
+    },
+    "ghcr.io/devcontainers/features/java": {
+      "version": "1.8.3",
+      "resolved": "ghcr.io/devcontainers/features/java@sha256:61a839211feda1e2a1f10646648a948e733e4d98d770f3a4b6698a3c5fc92abe",
+      "integrity": "sha256:61a839211feda1e2a1f10646648a948e733e4d98d770f3a4b6698a3c5fc92abe"
+    },
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube": {
+      "version": "1.3.1",
+      "resolved": "ghcr.io/devcontainers/features/kubectl-helm-minikube@sha256:bbe8adf6b37fff8c67412ab0a4579f4c2f30bbaba1d9a5cebd9e38bade54025b",
+      "integrity": "sha256:bbe8adf6b37fff8c67412ab0a4579f4c2f30bbaba1d9a5cebd9e38bade54025b"
+    },
+    "ghcr.io/devcontainers/features/node": {
+      "version": "2.1.1",
+      "resolved": "ghcr.io/devcontainers/features/node@sha256:2a19d3b0b3879437637cfd292eb29fee0afcfbe6364e33db9afc4f80c5c1f956",
+      "integrity": "sha256:2a19d3b0b3879437637cfd292eb29fee0afcfbe6364e33db9afc4f80c5c1f956"
+    },
+    "ghcr.io/jsburckhardt/devcontainer-features/gitleaks": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/jsburckhardt/devcontainer-features/gitleaks@sha256:8ac4946ade23f372e9c23f262c2006c8dd29090bd2b92b1f14948de48eb077d4",
+      "integrity": "sha256:8ac4946ade23f372e9c23f262c2006c8dd29090bd2b92b1f14948de48eb077d4"
+    },
+    "ghcr.io/rio/features/kustomize": {
+      "version": "1.1.2",
+      "resolved": "ghcr.io/rio/features/kustomize@sha256:fb0735cccf8082d918fa5ed78e5fbc668a409fd6929508d5e18d581daf5f43e8",
+      "integrity": "sha256:fb0735cccf8082d918fa5ed78e5fbc668a409fd6929508d5e18d581daf5f43e8"
+    }
+  }
+}
